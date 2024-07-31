@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '2')
+        timeout(1)
+    }
+    // Check for changes in the SCM every minute
+   triggers {
+       pollSCM '* * * * *'
+    }
+    
+    stages {
+        stage('Run Python Script') {
+            steps {
+                sh 'python3 view_machine_data.py'
+            }
+        }
+    }
+    
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
